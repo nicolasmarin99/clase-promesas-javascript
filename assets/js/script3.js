@@ -1,15 +1,35 @@
 //funcion para mostrar los digimones en cards
 
-const mortrarDigimon = async ()=>{
-    const digimonRow = document.getElementById('digimonRow');
+const obtenerDigimonAsyncAwait = async() => {
     try{
+        const response = await fetch('https://digimon-api.vercel.app/api/digimon');
+
+        if (!response.ok){
+            throw new Error('hubo un problema al obtener los datos del digimon');
+        }
+
+        const data = await response.json();
+        return data;
+    }   catch (error){
+        throw error;
+    }
+ }
+
+const mostrarDigimon = async ()=>{
+    const digimonRow = document.getElementById('digimonRow');
+    try{                            
         const digimones = await obtenerDigimonAsyncAwait();
         digimones.map((digimon)=> {
             const cardCol = document.createElement('div');
             cardCol.classList.add('col-sm-4');
 
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.classList.add('mt-2');
+            card.classList.add('mb-2');
 
-            const card = document.createElement('img');
+
+            const cardImg = document.createElement('img');
             cardImg.classList.add('card-img-top');
             cardImg.src = digimon.img;
 
@@ -29,10 +49,12 @@ const mortrarDigimon = async ()=>{
             card.appendChild(cardImg);
             card.appendChild(cardBody);
             cardCol.appendChild(card);
-            digimonRow(cardCol);
+            digimonRow.appendChild(cardCol);
         });
 
     }catch(error){
-        console.error('Error al obtener datos de digimon',error);
+        console.error(error);
     }
 }
+
+mostrarDigimon();
